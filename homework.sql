@@ -3,7 +3,7 @@
 select * from address;
 select first_name, last_name, district
 from customer
-full join address
+inner join address
 on customer.address_id = address.address_id and district = 'Texas'
 
 -- 2. Get all payments above $6.99 with the Customer's Full Name
@@ -53,12 +53,12 @@ on city.country_id = country.country_id and country.country = 'Nepal';
 
 -- 5. Which staff member had the most transactions?
 
-select first_name, last_name, rental.staff_id, count(rental.staff_id) as transactions
-from rental
+select first_name, last_name, payment.staff_id, count(payment.staff_id) as transactions
+from payment
 full join staff
-on rental.staff_id = staff.staff_id
-group by first_name, last_name, rental.staff_id
-order by count(rental.staff_id) desc;
+on payment.staff_id = staff.staff_id
+group by first_name, last_name, payment.staff_id
+order by count(payment.staff_id) desc;
 
 -- 6. How many movies of each rating are there?
 
@@ -74,7 +74,10 @@ where customer_id in(
 	select customer_id
 	from payment
 	where amount > 6.99
-);
+	group by customer_id
+	having count(customer_id) = 1
+)
+order by first_name;
 
 -- 8. How many free rentals did our stores give away?
 
